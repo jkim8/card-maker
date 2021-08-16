@@ -8,57 +8,25 @@ import styles from './maker.module.css';
 
 
 
-const Maker = ({FileInput, authService}) => {
-
-    const [cards, setCards] = useState({
-        '1': {
-            id : '1',
-            name: 'Junho',
-            company: 'apple',
-            theme: 'dark',
-            title: 'software Engineer',
-            email: 'juno0218@naver.com',
-            message: 'go for it',
-            fileName: 'juno',
-            fileIRL: 'null'
-        },
-        '2': {
-            id : '2',
-            name: 'Junho2',
-            company: 'apple',
-            theme: 'colorful',
-            title: 'software Engineer',
-            email: 'juno0218@naver.com',
-            message: 'go for it',
-            fileName: 'juno',
-            fileIRL: 'null'
-        },
-        '3': {
-            id : '3',
-            name: 'Junho3',
-            company: 'apple',
-            theme: 'light',
-            title: 'software Engineer',
-            email: 'juno0218@naver.com',
-            message: 'go for it',
-            fileName: 'juno',
-            fileIRL: 'juno.png'
-        }
-    })
-
-
-
+const Maker = ({FileInput, authService, cardRepository}) => {
 
     const history = useHistory()
+    const historyState = history?.location?.state
+    const [cards, setCards] = useState({})
+    const [userId, setUserId] = useState(historyState && historyState.id)
+
     const onLogout = () => {
         authService.logout()
     }
 
     useEffect(()=> {
         authService.onAuthChange(user => {
-        if(!user){
-            history.push('/')
-        }
+            if(user){
+                setUserId(user.uid) 
+            }
+            else {
+                history.push('/')
+            }
         })
     })
 
@@ -70,6 +38,7 @@ const Maker = ({FileInput, authService}) => {
             updated[card.id] = card
             return updated
         })
+        cardRepository.saveCard(userId, card)
     }
 
     const deleteCard = card => {
@@ -78,6 +47,8 @@ const Maker = ({FileInput, authService}) => {
             delete updated[card.id]
             return updated
         })
+        cardRepository.removeCard(userId, card)
+
     }
 
     return (
