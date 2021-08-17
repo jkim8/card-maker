@@ -48,6 +48,7 @@
     margin: 0;
     font-size: 0.8rem;
     margin-bottom: 0.2em;
+    word-break: break-word;
 }
 
 .name {
